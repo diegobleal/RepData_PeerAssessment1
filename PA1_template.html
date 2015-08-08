@@ -70,7 +70,10 @@ img {
 <div id="section-1" class="section level2">
 <h2>Section 1</h2>
 <p>Let’s first read the data.</p>
-<pre class="r"><code>steps&lt;-read.csv('activity.csv')</code></pre>
+<pre class="r"><code>if(!file.exists('activity.csv')){
+     unzip('activity.zip')
+}
+steps&lt;-read.csv('activity.csv')</code></pre>
 </div>
 <div id="section-2" class="section level2">
 <h2>Section 2</h2>

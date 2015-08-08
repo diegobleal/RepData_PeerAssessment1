@@ -12,6 +12,9 @@ Let's first read the data.
 
 
 ```r
+if(!file.exists('activity.csv')){
+     unzip('activity.zip')
+}
 steps<-read.csv('activity.csv')
 ```
 

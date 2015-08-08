@@ -11,6 +11,9 @@ keep_md: true
 Let's first read the data. 
 
 ```{r read.data, results='hide'}
+if(!file.exists('activity.csv')){
+     unzip('activity.zip')
+}
 steps<-read.csv('activity.csv')
 ```
 
