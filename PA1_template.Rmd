@@ -10,7 +10,7 @@ keep_md: true
 
 Let's first read the data. 
 
-```{r read.data, results='hide'}
+```{r read.data}
 if(!file.exists('activity.csv')){
      unzip('activity.zip')
 }
@@ -28,7 +28,7 @@ hist(sum)
 
 We now need to calculate the mean and median of the total number of steps taken per day. 
 
-```{r calculate.mean.median, results='hide'}
+```{r calculate.mean.median}
 mean<-mean(sum)
 median<-median(sum)
 ```
@@ -83,7 +83,7 @@ hist(newsum)
 
 I now calculate the new mean and median of the total number of steps taken. 
 
-```{r new.mean.median, results='hide'}
+```{r new.mean.median}
 newmean<-mean(newsum)
 newmedian<-median(newsum)
 ```
@@ -94,7 +94,7 @@ Now, the mean of the total number of steps taken per day is `r newmean` and the 
 
 I now create a new factor variable using the new dataset with two levels - "weekday" and "weekend". 
 
-```{r weekend, results='hide'}
+```{r weekend}
 newsteps$date<-strptime(as.character(newsteps$date), '%F')
 newsteps$day<-weekdays(newsteps$date)
 newsteps$weekday_division<-''
