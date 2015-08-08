@@ -10,7 +10,8 @@ keep_md: true
 
 Let's first read the data. 
 
-```{r read.data}
+
+```r
 if(!file.exists('activity.csv')){
      unzip('activity.zip')
 }
@@ -21,48 +22,60 @@ steps<-read.csv('activity.csv')
 
 After calculating the total number of steps taken per day, here's a histogram of those values:
 
-```{r sum.hist}
+
+```r
 sum<-tapply(steps$steps, steps$date, sum, na.rm=TRUE)
 hist(sum)
 ```
 
+![plot of chunk sum.hist](figure/sum.hist-1.png) 
+
 We now need to calculate the mean and median of the total number of steps taken per day. 
 
-```{r calculate.mean.median}
+
+```r
 mean<-mean(sum)
 median<-median(sum)
 ```
 
-The mean of the total number of steps taken per day is `r mean` and the median is `r median`. 
+The mean of the total number of steps taken per day is 9354.2295082 and the median is 10395. 
 
 ##Section 3
 
 Here's a time series plot of the 5-minute interval and the average number of steps taken, averaged across all days: 
 
-```{r timeseries.plot}
+
+```r
 timeseries<-tapply(steps$steps, steps$interval, mean, na.rm=TRUE)
 df<-data.frame(matrix(unlist(timeseries), nrow=length(timeseries), byrow=T))
 names(df)<-c('average')
 df$interval<-names(timeseries)
 plot(names(timeseries), df$average, type='l', xlab='Intervals', ylab='Average steps taken')
+```
+
+![plot of chunk timeseries.plot](figure/timeseries.plot-1.png) 
+
+```r
 max<-df$interval[[which.max(df$average)]]
 ```
 
-Also, the 5-minute interval that contains the maximum number of steps (on average accross all the days in the dataset) is the interval `r max`. 
+Also, the 5-minute interval that contains the maximum number of steps (on average accross all the days in the dataset) is the interval 835. 
 
 ##Section 4
 
 Now we need to calculate the number of rows with missing values in the dataset. 
 
-```{r NAs}
+
+```r
 nas<-sum(is.na(steps$steps))
 ```
 
-The total number of rows with missing values is `r nas`. 
+The total number of rows with missing values is 2304. 
 
 We now need to fill in all the missing values in the dataset. For each missing value, I fill in using the average number of steps taken for each respective interval. I then create a new dataset using these new values. 
 
-```{r filling.NAs}
+
+```r
 df$interval<-as.integer(df$interval)
 for(n in 1:nrow(steps)){
      if(is.na(steps$steps[n]>1)){
@@ -76,25 +89,30 @@ newsteps<-read.csv('activity.csv')
 
 Here's the new histogram of the total number of steps taken per day: 
 
-```{r sum.hist.mean}
+
+```r
 newsum<-tapply(newsteps$steps, newsteps$date, sum, na.rm=TRUE)
 hist(newsum)
 ```
 
+![plot of chunk sum.hist.mean](figure/sum.hist.mean-1.png) 
+
 I now calculate the new mean and median of the total number of steps taken. 
 
-```{r new.mean.median}
+
+```r
 newmean<-mean(newsum)
 newmedian<-median(newsum)
 ```
 
-Now, the mean of the total number of steps taken per day is `r newmean` and the median is `r newmedian`. Filling in the data with this method does not alter the value of the mean and median. 
+Now, the mean of the total number of steps taken per day is 9354.2295082 and the median is 10395. Filling in the data with this method does not alter the value of the mean and median. 
 
 ##Section 5
 
 I now create a new factor variable using the new dataset with two levels - "weekday" and "weekend". 
 
-```{r weekend}
+
+```r
 newsteps$date<-strptime(as.character(newsteps$date), '%F')
 newsteps$day<-weekdays(newsteps$date)
 newsteps$weekday_division<-''
@@ -110,9 +128,12 @@ for(n in 1:nrow(newsteps)){
 
 And, finally, I create a panel plot containing a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend days. 
 
-```{r last.timeseries}
+
+```r
 library(stats)
 library(ggplot2)
 finalaverage<-aggregate(steps ~ interval + weekday_division, data=newsteps, FUN='mean')
 ggplot(finalaverage, aes(interval, steps))+geom_line()+facet_grid(weekday_division~.)+xlab('5-minute interval')+ylab('Number of steps')
 ```
+
+![plot of chunk last.timeseries](figure/last.timeseries-1.png) 
